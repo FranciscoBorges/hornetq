@@ -37,8 +37,6 @@ import org.hornetq.tests.util.TransportConfigurationUtils;
 
 /**
  * @author <a href="mailto:andy.taylor@jboss.com">Andy Taylor</a>
- *         Date: Dec 21, 2010
- *         Time: 12:04:16 PM
  */
 public class FailBackAutoTest extends FailoverTestBase
 {
@@ -90,15 +88,13 @@ public class FailBackAutoTest extends FailoverTestBase
       listener = new CountDownSessionFailureListener(latch2);
 
       session.addFailureListener(listener);
-
       log.info("******* starting live server back");
+      backupServer.getServer().getConfiguration().setFailbackDelay(10);
+
       liveServer.start();
 
-      Thread.sleep(1000);
-
-      System.out.println("After failback: " + locator.getTopology().describe());
-
       assertTrue(latch2.await(5, TimeUnit.SECONDS));
+      System.out.println("After failback: " + locator.getTopology().describe());
 
       message = session.createMessage(true);
 
@@ -162,6 +158,8 @@ public class FailBackAutoTest extends FailoverTestBase
       session.addFailureListener(listener);
 
       log.info("restarting live node now");
+      backupServer.getServer().getConfiguration().setFailbackDelay(100);
+
       liveServer.start();
 
       assertTrue(listener.getLatch().await(5, TimeUnit.SECONDS));
@@ -218,6 +216,7 @@ public class FailBackAutoTest extends FailoverTestBase
 
       CountDownSessionFailureListener listener = new CountDownSessionFailureListener();
       session.addFailureListener(listener);
+      backupServer.getServer().getConfiguration().setFailbackDelay(10);
 
       liveServer.start();
 
