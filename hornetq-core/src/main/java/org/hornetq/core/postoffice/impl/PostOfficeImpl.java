@@ -32,6 +32,9 @@ import org.hornetq.api.core.HornetQDuplicateIdException;
 import org.hornetq.api.core.HornetQNonExistentQueueException;
 import org.hornetq.api.core.Message;
 import org.hornetq.utils.Pair;
+=======
+import org.hornetq.api.core.Pair;
+>>>>>>> Add robustness to leaking Reaper threads
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.management.ManagementHelper;
 import org.hornetq.api.core.management.NotificationType;
@@ -101,7 +104,7 @@ public class PostOfficeImpl implements PostOffice, NotificationListener, Binding
 
    private final ManagementService managementService;
 
-   private Reaper reaperRunnable;
+   private Reaper reaperRunnable = new Reaper();
 
    private volatile Thread reaperThread;
 
