@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.hornetq.api.core.HornetQDuplicateIdException;
 import org.hornetq.api.core.HornetQNonExistentQueueException;
 import org.hornetq.api.core.Message;
-<<<<<<< HEAD
 import org.hornetq.utils.Pair;
 =======
 import org.hornetq.api.core.Pair;
