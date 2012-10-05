@@ -599,7 +599,6 @@ public class FailoverTest extends FailoverTestBase
 
       assertEquals("backup must be running with the same nodeID", liveId, backupServer.getServer().getNodeID());
       sf.close();
-
       backupServer.crash();
       Thread.sleep(100);
       assertFalse("backup is not running", backupServer.isStarted());
@@ -711,6 +710,7 @@ public class FailoverTest extends FailoverTestBase
          assertFalse("must NOT be a backup", liveServer.getServer().getConfiguration().isBackup());
          adaptLiveConfigForReplicatedFailBack(liveServer.getServer().getConfiguration());
          beforeRestart(liveServer);
+         backupServer.getServer().getConfiguration().setFailbackDelay(10);
          liveServer.start();
          assertTrue("live initialized...", liveServer.getServer().waitForActivation(15, TimeUnit.SECONDS));
          int i = 0;

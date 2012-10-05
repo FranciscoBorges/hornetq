@@ -54,7 +54,8 @@ public class BindingsImpl implements Bindings
 
    private final ConcurrentMap<SimpleString, List<Binding>> routingNameBindingMap = new ConcurrentHashMap<SimpleString, List<Binding>>();
 
-   private final Map<SimpleString, Integer> routingNamePositions = new ConcurrentHashMap<SimpleString, Integer>();
+   private final ConcurrentMap<SimpleString, Integer> routingNamePositions =
+            new ConcurrentHashMap<SimpleString, Integer>();
 
    private final Map<Long, Binding> bindingsMap = new ConcurrentHashMap<Long, Binding>();
 

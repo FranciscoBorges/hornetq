@@ -75,6 +75,8 @@ public class QuorumFailOverTest extends StaticClusterWithBackupFailoverTest
       assertFalse("3 should have failed over ", servers[3].getConfiguration().isBackup());
 
       failNode(1);
+      // comment another comment...
+      assertTrue(servers[4].waitForActivation(2, TimeUnit.SECONDS));
       assertFalse("4 should have failed over ", servers[4].getConfiguration().isBackup());
    }
 

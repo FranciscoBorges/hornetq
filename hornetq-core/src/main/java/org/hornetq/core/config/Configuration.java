@@ -23,6 +23,7 @@ import org.hornetq.api.core.DiscoveryGroupConfiguration;
 import org.hornetq.api.core.Interceptor;
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.TransportConfiguration;
+import org.hornetq.core.config.impl.ConfigurationImpl;
 import org.hornetq.core.security.Role;
 import org.hornetq.core.server.JournalType;
 import org.hornetq.core.server.group.impl.GroupingHandlerConfiguration;
@@ -864,6 +865,8 @@ public interface Configuration extends Serializable
 
    /**
     * Returns the delay to wait before fail-back occurs on restart.
+    * <p>
+    * Default is {@link ConfigurationImpl#DEFAULT_FAILBACK_DELAY}.
     */
    long getFailbackDelay();
 
