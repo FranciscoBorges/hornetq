@@ -176,7 +176,7 @@ public class SelectorTest extends MessageTestBase
       server.getJaxrsServer().getDeployment().getRegistry().addPerRequestResource(PushReceiver.class);
       ClientRequest request = new ClientRequest(generateURL("/topics/" + topicName));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link consumers = MessageTestBase.getLinkByTitle(manager.getQueueManager().getLinkStrategy(), response, "push-subscriptions");
@@ -250,7 +250,7 @@ public class SelectorTest extends MessageTestBase
    {
       ClientRequest request = new ClientRequest(generateURL("/topics/" + topicName));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link consumers = MessageTestBase.getLinkByTitle(manager.getQueueManager().getLinkStrategy(), response, "pull-subscriptions");

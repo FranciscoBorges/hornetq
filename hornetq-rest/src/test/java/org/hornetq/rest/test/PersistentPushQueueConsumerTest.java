@@ -71,7 +71,7 @@ public class PersistentPushQueueConsumerTest
 
          ClientRequest request = new ClientRequest(generateURL("/queues/" + testName));
 
-         ClientResponse response = request.head();
+         ClientResponse<?> response = request.head();
          response.releaseConnection();
          Assert.assertEquals(200, response.getStatus());
          Link sender = MessageTestBase.getLinkByTitle(manager.getQueueManager().getLinkStrategy(), response, "create");

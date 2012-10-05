@@ -79,7 +79,7 @@ public class EmbeddedTest
 
       ClientRequest request = new ClientRequest(generateURL("/queues/jms.queue.exampleQueue"));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = response.getLinkHeader().getLinkByTitle("create");

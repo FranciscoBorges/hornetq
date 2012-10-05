@@ -50,7 +50,7 @@ public class ClientAckTopicTest extends MessageTestBase
 
       ClientRequest request = new ClientRequest(generateURL("/topics/testAck"));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");
@@ -125,7 +125,7 @@ public class ClientAckTopicTest extends MessageTestBase
    {
       ClientRequest request = new ClientRequest(generateURL("/topics/testQueue"));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");
@@ -189,7 +189,7 @@ public class ClientAckTopicTest extends MessageTestBase
    {
       ClientRequest request = new ClientRequest(generateURL("/topics/testQueue"));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");
@@ -253,7 +253,7 @@ public class ClientAckTopicTest extends MessageTestBase
    {
       ClientRequest request = new ClientRequest(generateURL("/topics/testQueue"));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");

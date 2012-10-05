@@ -27,7 +27,7 @@ public class AutoAckTopicTest extends MessageTestBase
 
       ClientRequest request = new ClientRequest(generateURL("/topics/" + testName));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");

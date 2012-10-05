@@ -33,7 +33,7 @@ public class CreateDestinationTest extends MessageTestBase
       System.out.println("Location: " + cRes.getLocation());
       ClientRequest request = cRes.getLocation().request();
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getQueueManager().getLinkStrategy(), response, "create");
@@ -88,7 +88,7 @@ public class CreateDestinationTest extends MessageTestBase
 
       ClientRequest request = cRes.getLocation().request();
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");

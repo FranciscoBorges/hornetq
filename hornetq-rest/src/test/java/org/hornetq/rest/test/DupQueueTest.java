@@ -28,7 +28,7 @@ public class DupQueueTest extends MessageTestBase
 
       ClientRequest request = new ClientRequest(generateURL("/queues/" + testName));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getQueueManager().getLinkStrategy(), response, "create");
       System.out.println("create: " + sender);
@@ -93,7 +93,7 @@ public class DupQueueTest extends MessageTestBase
 
       ClientRequest request = new ClientRequest(generateURL("/queues/" + testName));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getQueueManager().getLinkStrategy(), response, "create-with-id");

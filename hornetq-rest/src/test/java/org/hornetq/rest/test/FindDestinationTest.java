@@ -23,7 +23,7 @@ public class FindDestinationTest extends MessageTestBase
 
       ClientRequest request = new ClientRequest(generateURL("/queues/" + testName));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");
@@ -53,7 +53,7 @@ public class FindDestinationTest extends MessageTestBase
       server.getHornetqServer().createQueue(new SimpleString("testTopic"), new SimpleString("testTopic"), null, false, false);
       ClientRequest request = new ClientRequest(generateURL("/topics/testTopic"));
 
-      ClientResponse response = request.head();
+      ClientResponse<?> response = request.head();
       response.releaseConnection();
       Assert.assertEquals(200, response.getStatus());
       Link sender = MessageTestBase.getLinkByTitle(manager.getTopicManager().getLinkStrategy(), response, "create");
