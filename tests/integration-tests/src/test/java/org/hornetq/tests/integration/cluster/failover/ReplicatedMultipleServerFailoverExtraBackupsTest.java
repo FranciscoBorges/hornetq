@@ -40,7 +40,7 @@ import org.hornetq.tests.integration.cluster.util.TestableServer;
  */
 public class ReplicatedMultipleServerFailoverExtraBackupsTest extends ReplicatedMultipleServerFailoverTest
 {
-   public void OFF_testStartLiveFirst() throws Exception
+   public void testStartLiveFirst() throws Exception
    {
       backupServers.get(2).getServer().getConfiguration().setBackupGroupName(getNodeGroupName() + "-0");
       backupServers.get(3).getServer().getConfiguration().setBackupGroupName(getNodeGroupName() + "-1");
@@ -51,7 +51,9 @@ public class ReplicatedMultipleServerFailoverExtraBackupsTest extends Replicated
       for (TestableServer backupServer : backupServers)
       {
          backupServer.start();
+         waitForServer(backupServer.getServer());
       }
+
       sendCrashReceive();
       waitForTopology(backupServers.get(0).getServer(), liveServers.size(), 2);
       sendCrashBackupReceive();
@@ -71,6 +73,13 @@ public class ReplicatedMultipleServerFailoverExtraBackupsTest extends Replicated
       {
          liveServer.start();
       }
+
+
+      for (TestableServer backupServer : backupServers)
+      {
+         waitForServer(backupServer.getServer());
+      }
+
       waitForTopology(liveServers.get(0).getServer(), liveServers.size(), 2);
       sendCrashReceive();
    }
