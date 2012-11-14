@@ -379,19 +379,9 @@ public class HornetQServerImpl implements HornetQServer
 
       try
       {
-         final boolean replicatingBackup = configuration.isBackup() && !configuration.isSharedStore();
-         if (replicatingBackup)
-         {
-            /**
-             * Has to be done before all directory checks and before opening the "server.lock" file
-             * (done when using {@link FileLockNodeManager} or its extension classes.
-             */
-            moveServerData();
-         }
-
          checkJournalDirectory();
 
-         nodeManager = createNodeManager(configuration.getJournalDirectory(), replicatingBackup);
+         nodeManager = createNodeManager(configuration.getJournalDirectory(), false);
 
          nodeManager.setNodeGroupName(configuration.getBackupGroupName());
 
@@ -431,6 +421,8 @@ public class HornetQServerImpl implements HornetQServer
             else
             {
                assert replicationEndpoint == null;
+               nodeManager.stop();
+               nodeManager = createNodeManager(configuration.getJournalDirectory(), true);
                backupUpToDate = false;
                replicationEndpoint = new ReplicationEndpoint(this, shutdownOnCriticalIO, wasLive);
                activation = new SharedNothingBackupActivation(wasLive);
@@ -2197,6 +2189,10 @@ public class HornetQServerImpl implements HornetQServer
             {
                state = SERVER_STATE.STARTED;
             }
+            // move all data away:
+            nodeManager.stop();
+            moveServerData();
+            nodeManager.start();
             synchronized (this)
             {
                if (closed)
@@ -2246,7 +2242,7 @@ public class HornetQServerImpl implements HornetQServer
 
             serverLocator0.addIncomingInterceptor(new ReplicationError(HornetQServerImpl.this, nodeLocator));
 
-            nodeManager.startBackup();
+            // nodeManager.startBackup();
 
             clusterManager.start();
 
