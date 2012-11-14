@@ -352,13 +352,19 @@ public class HornetQServerImpl implements HornetQServer
    /*
     * Can be overridden for tests
     */
-   protected NodeManager createNodeManager(final String directory, boolean replicatingBackup)
+   protected NodeManager createNodeManager(final String directory, String nodeGroupName, boolean replicatingBackup)
    {
+      NodeManager manager;
       if (configuration.getJournalType() == JournalType.ASYNCIO && AsynchronousFileImpl.isLoaded())
       {
-         return new AIOFileLockNodeManager(directory, replicatingBackup);
+         manager = new AIOFileLockNodeManager(directory, replicatingBackup);
       }
-      return new FileLockNodeManager(directory,replicatingBackup);
+      else
+      {
+         manager = new FileLockNodeManager(directory, replicatingBackup);
+      }
+      manager.setNodeGroupName(nodeGroupName);
+      return manager;
    }
 
    public final synchronized void start() throws Exception
@@ -381,9 +387,8 @@ public class HornetQServerImpl implements HornetQServer
       {
          checkJournalDirectory();
 
-         nodeManager = createNodeManager(configuration.getJournalDirectory(), false);
-
-         nodeManager.setNodeGroupName(configuration.getBackupGroupName());
+         nodeManager =
+                  createNodeManager(configuration.getJournalDirectory(), configuration.getBackupGroupName(), false);
 
          nodeManager.start();
 
@@ -422,7 +427,8 @@ public class HornetQServerImpl implements HornetQServer
             {
                assert replicationEndpoint == null;
                nodeManager.stop();
-               nodeManager = createNodeManager(configuration.getJournalDirectory(), true);
+               nodeManager =
+                        createNodeManager(configuration.getJournalDirectory(), configuration.getBackupGroupName(), true);
                backupUpToDate = false;
                replicationEndpoint = new ReplicationEndpoint(this, shutdownOnCriticalIO, wasLive);
                activation = new SharedNothingBackupActivation(wasLive);
