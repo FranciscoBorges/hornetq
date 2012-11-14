@@ -52,7 +52,7 @@ public final class InVMNodeManagerServer extends HornetQServerImpl
    }
 
    @Override
-   protected NodeManager createNodeManager(final String directory)
+   protected NodeManager createNodeManager(final String directory, boolean replicatingBackup)
    {
       return nodeManager;
    }

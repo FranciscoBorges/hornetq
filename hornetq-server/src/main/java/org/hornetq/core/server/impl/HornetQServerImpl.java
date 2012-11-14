@@ -352,16 +352,16 @@ public class HornetQServerImpl implements HornetQServer
    /*
     * Can be overridden for tests
     */
-   protected NodeManager createNodeManager(final String directory)
+   protected NodeManager createNodeManager(final String directory, boolean replicatingBackup)
    {
       if (configuration.getJournalType() == JournalType.ASYNCIO && AsynchronousFileImpl.isLoaded())
       {
-         return new AIOFileLockNodeManager(directory);
+         return new AIOFileLockNodeManager(directory, replicatingBackup);
       }
-      return new FileLockNodeManager(directory);
+      return new FileLockNodeManager(directory,replicatingBackup);
    }
 
-   public synchronized void start() throws Exception
+   public final synchronized void start() throws Exception
    {
       if (state != SERVER_STATE.STOPPED)
       {
@@ -379,7 +379,8 @@ public class HornetQServerImpl implements HornetQServer
 
       try
       {
-         if (configuration.isBackup() && !configuration.isSharedStore())
+         final boolean replicatingBackup = configuration.isBackup() && !configuration.isSharedStore();
+         if (replicatingBackup)
          {
             /**
              * Has to be done before all directory checks and before opening the "server.lock" file
@@ -390,7 +391,7 @@ public class HornetQServerImpl implements HornetQServer
 
          checkJournalDirectory();
 
-         nodeManager = createNodeManager(configuration.getJournalDirectory());
+         nodeManager = createNodeManager(configuration.getJournalDirectory(), replicatingBackup);
 
          nodeManager.setNodeGroupName(configuration.getBackupGroupName());
 
@@ -456,7 +457,7 @@ public class HornetQServerImpl implements HornetQServer
    }
 
    @Override
-   protected void finalize() throws Throwable
+   protected final void finalize() throws Throwable
    {
       if (state != SERVER_STATE.STOPPED)
       {
@@ -471,7 +472,7 @@ public class HornetQServerImpl implements HornetQServer
    /**
     * Stops the server in a different thread.
     */
-   public void stopTheServer()
+   public final void stopTheServer()
    {
       ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.submit(new Runnable()
@@ -491,7 +492,7 @@ public class HornetQServerImpl implements HornetQServer
       });
    }
 
-   public void stop() throws Exception
+   public final void stop() throws Exception
    {
       synchronized (failbackCheckerGuard)
       {
@@ -528,7 +529,7 @@ public class HornetQServerImpl implements HornetQServer
       HornetQServerLogger.LOGGER.warn(str.toString());
    }
 
-   public void stop(boolean failoverOnServerShutdown) throws Exception
+   public final void stop(boolean failoverOnServerShutdown) throws Exception
    {
       stop(failoverOnServerShutdown, false);
    }
@@ -1562,6 +1563,10 @@ public class HornetQServerImpl implements HornetQServer
 
       remotingService.start();
 
+      if (nodeManager.getNodeId() == null)
+      {
+         throw HornetQMessageBundle.BUNDLE.nodeIdNull();
+      }
       activationLatch.countDown();
    }
 
@@ -2314,9 +2319,9 @@ public class HornetQServerImpl implements HornetQServer
                if (!isStarted() || signal == STOP)
                   return;
                //time to fail over
-               else if(signal == FAIL_OVER)
+               else if (signal == FAIL_OVER)
                   break;
-               //something has gone badly run restart from scratch
+               // something has gone badly run restart from scratch
                else if(signal == BACKUP_ACTIVATION.FAILURE_REPLICATING)
                {
                   Thread startThread = new Thread(new Runnable()
@@ -2877,16 +2882,16 @@ public class HornetQServerImpl implements HornetQServer
       {
          File dir = new File(dir0);
          File newPath = new File(dir.getPath() + lowestSuffixForMovedData);
-         if (dir.exists() )
+         if (dir.exists())
          {
             if (!dir.renameTo(newPath))
             {
-               throw new IllegalStateException("Could not move "+dir);
+               throw new IllegalStateException("Could not move " + dir);
             }
 
             HornetQServerLogger.LOGGER.backupMovingDataAway(dir0, newPath.getPath());
-            dir.mkdir();
          }
+         dir.mkdir();
       }
    }
 }

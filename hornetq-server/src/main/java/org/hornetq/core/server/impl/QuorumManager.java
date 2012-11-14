@@ -66,7 +66,7 @@ public final class QuorumManager implements SessionFailureListener, ClusterTopol
    @Override
    public void nodeDown(long eventUID, String nodeID)
    {
-      if(targetServerID.equals(nodeID))
+      if (targetServerID.equals(nodeID))
       {
          decideOnAction();
       }
